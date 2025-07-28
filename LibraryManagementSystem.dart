@@ -16,15 +16,11 @@ abstract class User {
 }
 
 class Student extends User {
-  Student(super.firstName, super.middleName, super.lastName, super.age, super.email, super.password){
-    id++;
-  }
+  Student(super.firstName, super.middleName, super.lastName, super.age, super.email, super.password);
 
   @override
     void showProfile(){
-      print("\n===================");
-      print("\tProfile");
-      print("===================");
+      print("==================================");
       print('First Name: $firstName');
       print('Middle Name: $middleName');
       print('Last Name: $lastName');
@@ -38,7 +34,7 @@ class Librarian extends User {
 
     @override
     void showProfile(){
-      print("\n");
+      print("==================================");
       print('First Name: $firstName');
       print('Middle Name: $middleName');
       print('Last Name: $lastName');
@@ -81,50 +77,6 @@ List <Librarian> librarians = [];
 List <Book> books = [];
 List <Library> library = [];
 
-void studentMenu(int id){
-  while(true){
-    print("\n\n==================================");
-    print("\tStudent Menu");
-    print("==================================");
-    print("[1] Profile");
-    print("[2] Borrow Book/s");
-    print("[3] Book/s Borrowed");
-    print("[4] Return Book");
-    print('[0] Logout');
-    print("==================================");  
-    stdout.write(": ");
-    int choice = int.parse(stdin.readLineSync()!);
-
-    if(choice != 0 && choice != 1 && choice != 2 && choice != 3 && choice != 4){
-      print("\nInvalid option, Please try again.\n");
-    } else {
-      switch(choice){
-        case 0:
-          return;
-        case 1:
-          for(var student in students){
-            if(student.id == id){
-              student.showProfile();
-            }
-          }  
-          break;
-      }
-    }
-  }
- 
-}
-
-void printLibrarianMenu(){
-  print("\n\n==================================");
-  print("Library Management System Menu");
-  print("==================================");
-  print("[1] Profile");
-  print("[2] Students");
-  print("[3] Total Book/s Borrowed");
-  print('[0] Exit');
-  print("==================================");  
-}
-
 void showCreateAccountMenu(){
   while(true){
     print("Create account as?");
@@ -140,7 +92,8 @@ void showCreateAccountMenu(){
     } else if(option == 0){
       break;
     } else if(option == 1){
-      //librarianSignUp()
+      librarianSignUp();
+      librarianLogin();
     } else if (option == 2){
       studentSignUp();
       studentLogin();
@@ -178,6 +131,31 @@ void showLoginMenu(){
   }   
 }
 
+void librarianSignUp(){
+  print("\n===================");
+  print("\tSign up");
+  print("===================");
+  stdout.write("Name: ");
+  String firstName = stdin.readLineSync()!;
+  stdout.write("Middle Name: ");
+  String? middleName = stdin.readLineSync();
+  stdout.write("Last Name: ");
+  String lastName = stdin.readLineSync()!;
+  stdout.write("Age: ");
+  int age = int.parse(stdin.readLineSync()!);
+  stdout.write("Email: ");
+  String email = stdin.readLineSync()!;
+  stdout.write("Password: ");
+  String password = stdin.readLineSync()!;
+
+  Librarian librarian = Librarian(firstName, middleName, lastName, age, email, password);
+  librarians.add(librarian);
+
+  print("\nAccount created successfully");
+  print("Librarian Id: ${librarian.id}");
+  print("\n");
+}
+
 void studentSignUp(){
   print("\n===================");
   print("\tSign up");
@@ -203,10 +181,43 @@ void studentSignUp(){
   print("\n");
 }
 
+void librarianLogin(){
+  outerLoop:
+  while(true){
+    print("\n===================");
+    print("Librarian Login");
+    print("===================");
+    print("[1] Login");
+    print("[0] Back to main menu");
+    print("===================");
+    stdout.write(": ");
+    int choice = int.parse(stdin.readLineSync()!);
+    if(choice != 0 && choice != 1){
+      print("\nInvalid option, Please try again\n");
+    } else if (choice == 0){
+      return;
+    } else {
+      stdout.write("Librarian ID: ");
+      int librarianId = int.parse(stdin.readLineSync()!);
+      stdout.write("Password: ");
+      String pass = stdin.readLineSync()!;
+
+      for(var librarian in librarians){
+        if(librarian.id == librarianId && librarian.password == pass){
+          librarianMenu(librarianId);
+          break outerLoop;
+        }
+      }
+
+      print("\nIncorrect Id or password, Please try again\n");
+    }
+  }
+}
+
 void studentLogin(){
   while(true){
     print("\n===================");
-    print("\tLogin");
+    print("Student Login");
     print("===================");
     print("[1] Login");
     print("[0] Back to main menu");
@@ -236,27 +247,105 @@ void studentLogin(){
   }
 }
 
-void processStudent(){
-  int? choice;
-  stdout.write(": ");
-  choice = int.parse(stdin.readLineSync()!);
-  if(choice != 0 && choice != 1 && choice != 2 && choice != 3 && choice != 4){
-    print("Invalid option");
-    return;
+void studentMenu(int id){
+  while(true){
+    print("\n\n==================================");
+    print("\tStudent Menu");
+    print("==================================");
+    print("[1] Profile");
+    print("[2] Borrow Book/s");
+    print("[3] Book/s Borrowed");
+    print("[4] Return Book");
+    print('[0] Logout');
+    print("==================================");  
+    stdout.write(": ");
+    int choice = int.parse(stdin.readLineSync()!);
+
+    if(choice != 0 && choice != 1 && choice != 2 && choice != 3 && choice != 4){
+      print("\nInvalid option, Please try again.\n");
+    } else {
+      switch(choice){
+        case 0:
+          return;
+        case 1:
+          print("\n==================================");
+          print("\tProfile");
+          for(var student in students){
+            if(student.id == id){
+              student.showProfile();
+            }
+          }  
+          break;
+      }
+    }
   }
+ 
+}
 
-  switch(choice){
-    case 0:
-            exit(0);
-    case 1:
-            
+void librarianMenu(int id){
+  while(true){
+    print("\n\n==================================");
+    print("\tLibrarian Menu");
+    print("==================================");
+    print("[1] Profile");
+    print("[2] Students");
+    print("[3] Total Book/s Borrowed");
+    print("[4] Add book");
+    print('[0] Logout');
+    print("==================================");  
+    stdout.write(": ");
+    int choice = int.parse(stdin.readLineSync()!);
 
+    if(choice != 0 && choice != 1 && choice != 2 && choice != 3 && choice != 4){
+      print("\nInvalid option, Please try again.\n");
+    } else {
+      switch(choice){
+        case 0: 
+          return;
+        case 1:
+          print("\n==================================");
+          print("\tProfile");
+          for (var librarian in librarians) {
+            if(librarian.id == id){
+              librarian.showProfile();
+            }
+          }
+          break; 
+        case 2:
+          print("\n==================================");
+          print("Student/s");
+          for (var student in students) {
+            student.showProfile();
+          }
+          break;
+        case 3:
+          //total books borrowed function to be follow
+          break;
+        case 4:
+          stdout.write("Title: ");
+          String title = stdin.readLineSync()!;
+          stdout.write("Author: ");
+          String author = stdin.readLineSync()!; 
+          stdout.write("Genre: ");
+          String genre = stdin.readLineSync()!;
+          stdout.write("Is available (true or false): ");
+          String isAvailableInput = stdin.readLineSync()!; 
+          bool isAvailable;
+          if(isAvailableInput == "true"){isAvailable = true;}else{isAvailable = false;}
+          Book book = Book(title: title, author: author, genre: genre, isAvailable: isAvailable);
+          books.add(book);
+
+          print("\nBook added successfully\n");
+          break;
+      }
+    }
   }
 }
 
 void main(){
   int? choice;
 
+  //main menu
   do {
     print("\n\n==================================");
     print("\tWhat would you like to do?");
