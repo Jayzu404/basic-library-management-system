@@ -94,6 +94,7 @@ void showCreateAccountMenu(){
     } else if(option == 1){
       librarianSignUp();
       librarianLogin();
+      return;
     } else if (option == 2){
       studentSignUp();
       studentLogin();
@@ -121,7 +122,7 @@ void showLoginMenu(){
         case 0:
                 return;
         case 1:
-                //show libriarian login
+                librarianLogin();
                 return;
         case 2: 
                 studentLogin();
@@ -205,7 +206,7 @@ void librarianLogin(){
       for(var librarian in librarians){
         if(librarian.id == librarianId && librarian.password == pass){
           librarianMenu(librarianId);
-          break outerLoop;
+          continue outerLoop;
         }
       }
 
@@ -283,6 +284,7 @@ void studentMenu(int id){
 }
 
 void librarianMenu(int id){
+  outerLoop:
   while(true){
     print("\n\n==================================");
     print("\tLibrarian Menu");
@@ -312,6 +314,10 @@ void librarianMenu(int id){
           }
           break; 
         case 2:
+          if(students.isEmpty){
+            print("\nNo student/s registered as of the moment\n");
+            continue outerLoop;
+          }
           print("\n==================================");
           print("Student/s");
           for (var student in students) {
