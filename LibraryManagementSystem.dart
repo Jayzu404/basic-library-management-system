@@ -55,8 +55,6 @@ class Book {
     print('Title: $title');
     print('Author: $author');
     print('Genre: $genre');
-    String availability = isAvailable ? 'Available' : 'Not Available'; 
-    print('Availability: $availability');
   }
 }
 
@@ -75,6 +73,7 @@ class Library {
 List <Student> students = [];
 List <Librarian> librarians = [];
 List <Book> books = [];
+List <Book> borrowedBooks = [];
 List <Library> library = [];
 
 void showCreateAccountMenu(){
@@ -154,7 +153,6 @@ void librarianSignUp(){
 
   print("\nAccount created successfully");
   print("Librarian Id: ${librarian.id}");
-  print("\n");
 }
 
 void studentSignUp(){
@@ -179,7 +177,6 @@ void studentSignUp(){
 
   print("\nAccount created successfully!");
   print("Student ID: ${student.id}");
-  print("\n");
 }
 
 void librarianLogin(){
@@ -277,6 +274,44 @@ void studentMenu(int id){
             }
           }  
           break;
+        case 2:
+          case2OuterLoop:
+          while(true){
+            if(books.isEmpty){
+              print("\n\tNo book/s available");
+              break;
+            }
+            print("\n==================================");
+            print("\tBooks Available");
+            print("==================================");  
+            for(int i = 0; i < books.length; i++){
+              if(books[i].isAvailable){
+                print("[${i+1}] ${books[i].title} by ${books[i].author}");
+              }
+            }
+            print("==================================");  
+            stdout.write(": ");
+            int choice = int.parse(stdin.readLineSync()!);
+
+            if(choice < 1 && choice > books.length){
+              print("\nInvalid option, Please try again\n");
+              continue;
+            } else {
+              for(int i = 1; i <= books.length; i++){
+                if(choice == i){
+                  print("\nYour chose ${books[i-1].title} by ${books[i-1].author}");
+                  borrowedBooks.add(books[i-1]);
+                  books[i-1].isAvailable = false;
+                  books.removeAt(i-1);
+                  break case2OuterLoop;
+                }
+              }
+            } 
+        }
+        case 3:
+          print("\n\tBorrowed book");
+          print("==================================");
+          borrowedBooks[0].showBookInfo();  
       }
     }
   }
@@ -341,7 +376,7 @@ void librarianMenu(int id){
           Book book = Book(title: title, author: author, genre: genre, isAvailable: isAvailable);
           books.add(book);
 
-          print("\nBook added successfully\n");
+          print("\nBook added successfully");
           break;
       }
     }
